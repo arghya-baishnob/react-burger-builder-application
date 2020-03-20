@@ -40,6 +40,8 @@ export const checkAuthTimeout = (expirationTime) => {
 }
 
 export const auth = (email, password, isSignUp) => {
+    // Add .env file in the root dir of the project & add this key value
+    const firebaseKey = process.env.REACT_APP_FIREBASE_API_KEY ;
     return dipatch => {
         dipatch(authStart());
         const authData = {
@@ -47,9 +49,9 @@ export const auth = (email, password, isSignUp) => {
             password: password,
             returnSecureToken: true
         }
-        let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyADtxmrWsqyg62qPJinsURcWNt8AWjaFu0';
+        let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + firebaseKey;
         if (!isSignUp) {
-            url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyADtxmrWsqyg62qPJinsURcWNt8AWjaFu0';
+            url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + firebaseKey;
         }
         axios.post(url, authData)
         .then(response => {
