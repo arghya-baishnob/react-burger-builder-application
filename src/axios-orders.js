@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const fireBaseBurgerApi = process.env.REACT_APP_FIREBASE_BURGER_APP;
+
 const instance = axios.create({
-    baseURL: 'https://react-my-burger-e79d8.firebaseio.com/'
+    baseURL: fireBaseBurgerApi
 });
 
 export default instance;

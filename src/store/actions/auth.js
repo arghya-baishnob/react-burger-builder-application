@@ -32,26 +32,29 @@ export const logout = () => {
 }
 
 export const checkAuthTimeout = (expirationTime) => {
-    return dipatch => {
+    return dispatch => {
         setTimeout(() => {
-            dipatch(logout());
+            dispatch(logout());
         }, expirationTime * 1000);
     };
 }
 
 export const auth = (email, password, isSignUp) => {
+    
     // Add .env file in the root dir of the project & add this key value
-    const firebaseKey = process.env.REACT_APP_FIREBASE_API_KEY ;
-    return dipatch => {
-        dipatch(authStart());
+    const fireBaseAuthApi = process.env.REACT_APP_FIREBASE_AUTH_API_URI;
+    const fireBaseKey = process.env.REACT_APP_FIREBASE_API_KEY;
+
+    return dispatch => {
+        dispatch(authStart());
         const authData = {
             email: email,
             password: password,
             returnSecureToken: true
         }
-        let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + firebaseKey;
+        let url = fireBaseAuthApi + 'accounts:signUp?key=' + fireBaseKey;
         if (!isSignUp) {
-            url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + firebaseKey;
+            url = fireBaseAuthApi +'accounts:signInWithPassword?key=' + fireBaseKey;
         }
         axios.post(url, authData)
         .then(response => {
@@ -59,11 +62,11 @@ export const auth = (email, password, isSignUp) => {
             localStorage.setItem('token', response.data.idToken);
             localStorage.setItem('expirationDate', expirationDate);
             localStorage.setItem('userId', response.data.localId);
-            dipatch(authSuccess(response.data.idToken, response.data.localId));
-            dipatch(checkAuthTimeout(response.data.expiresIn));
+            dispatch(authSuccess(response.data.idToken, response.data.localId));
+            dispatch(checkAuthTimeout(response.data.expiresIn));
         })
         .catch(err => {
-            dipatch(authFail(err.response.data.error));
+            dispatch(authFail(err.response.data.error));
         });
     }
 }
